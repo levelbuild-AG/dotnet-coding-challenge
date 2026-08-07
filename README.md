@@ -1,96 +1,66 @@
-# .NET Coding Challenge
-This is a coding challenge for .NET developers under the assumption that they are familiar with .NET Core, EF Core, MVC and REST.
+# Customer API
 
-## Overview
+A simple REST API for managing Customers and the Users that belong to them.
+Built with .NET, ASP.NET Core, EF Core, and SQLite.
 
-The objective of this challenge is to create an API that manages customers and their respective users.
+## What this does
 
-## Requirements
+- Create, view, update, and delete **Customers**
+- Create, view, update, and delete **Users**, each User belongs to exactly one Customer
+- Deleting a Customer automatically deletes all of its Users
+- Supports filtering, sorting, and pagination on list endpoints (`$select`, `$filter`,
+  `$top`, `$skip`, `$orderby`)
+- Names and emails must be unique, trying to create a duplicate returns a clear error
+- Data is stored in a local SQLite database file
 
-1. You must use .NET Core (Version 8.0 or newer) and C#
-2. The API must consume and return JSON data
-3. The GET API should utilize the following OData parameters to query data 
-    - $select
-    - $filter
-    - $top
-    - $skip
-    - $orderby
-4. The data must be stored in a persistent database using EF Core and SQLite 
-5. You do not need to implement Authorization/Authentication or consider any other security implications 
-6. You are free to use any NuGet package if you can justify its usage
+## What you need before running this
 
-## Specification
+- [.NET 8 SDK or newer](https://dotnet.microsoft.com/download) installed on your computer
 
-The application must expose two RESTful API endpoints providing standard CRUD functionality for the **Customer** and **User** entities.
+## How to run it
 
-### Customer
-#### URL Path
-**GET**
-```
-/api/customer
-/api/customer/{id}
-```
-**POST**
-```
-/api/customer
-```
-**PATCH**
-```
-/api/customer/{id}
-```
-**DELETE**
-```
-/api/customer/{id}
+Open a terminal in this folder and run:
+
+```bash
+cd CustomerApi
+dotnet ef database update
+dotnet run
 ```
 
-#### Data Format
-| Field Name | Data Type | Required | Unique | Validation      |
-|--|--|-------|--------|-----------------|
-| Name | `string` | true  | true   | max length 255  |
-| Website | `string` | false | false  | max length 255  |
+The first command creates the database file (only needed the first time).
+The second command starts the API.
 
-#### Additional Information
-- If a customer is deleted all associated users must also be deleted
-- The customer response objects must not contain associated users
-- Creating or updating a customer must not affect any user
+Once it's running, you'll see a line like: http://localhost:5277
+Open that address in your browser, or go to `http://localhost:5277/swagger`
+for a page where you can try out every endpoint by clicking buttons.
 
-### User
-#### URL Path
-**GET**
-```
-/api/customer/{id}/user
-/api/customer/{id}/user/{id}
-```
-**POST**
-```
-/api/customer/{id}/user
-```
-**PATCH**
-```
-/api/customer/{id}/user/{id}
-```
-**DELETE**
-```
-/api/customer/{id}/user/{id}
+## How to run the automated tests
+
+```bash
+cd CustomerApi.Tests
+dotnet test
 ```
 
-#### Data Format
-| Field Name    | Data Type  | Required | Unique | Validation                       |
-|---------------|------------|----------|--------|----------------------------------|
-| DisplayName   | `string`   | true     | true   | max length 255                   |
-| FirstName     | `string`   | true     | false  | max length 255                   |
-| LastName      | `string`   | true     | false  | max length 255                   |
-| Email         | `string`   | true     | true   | typical email address validation |
-| Date of Birth | `DateTime` | true     | false  |  |
+This runs a set of automated checks that confirm the core features work correctly,
+creating records, blocking duplicates, returning proper errors, and cascade delete.
 
-#### Additional Information
-- A user must always belong to a single customer
-- The user response objects must only contain the associated customer's Id, no additional customer information
+## A few decisions worth explaining
 
-## Assessment Criteria
+- **Why separate DTOs from database models?** So a Customer's response never
+  accidentally includes its list of Users, and a User's response only shows the
+  Customer's ID and not the Customer's full details.
+- **Why does deleting a Customer also delete its Users?** This is enforced directly
+  in the database itself, so it's guaranteed to happen consistently, not just
+  something the application code has to remember to do.
+- **Why SQLite?** It's a lightweight database that lives in a single file, no
+  separate database server needs to be installed or running.
 
-- The provided code should be near production quality
-- The provided code should be testable
-- The API should return plausible HTTP codes
+## Time spent
 
-We will not provide a strict time limit, but we recommend to spend between 2-6 hours. Please clone this repository and push your results to a private repo when you are ready to share your work with us. 
+Approximately 6 hours total:
+- 2 hours: environment setup (.NET SDK, VS Code, project scaffolding) and researching
+  concepts I hadn't used before (EF Core, OData, DTOs)
+- 2 hours: implementing the Customer and User models, DbContext, and both controllers
+  with full CRUD support
+- 1 hours: writing and running automated tests
+- 1 hour: debugging, error handling, cleanup, and documentation
