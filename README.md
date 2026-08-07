@@ -6,11 +6,11 @@ Built with .NET, ASP.NET Core, EF Core, and SQLite.
 ## What this does
 
 - Create, view, update, and delete **Customers**
-- Create, view, update, and delete **Users** , each User belongs to exactly one Customer
+- Create, view, update, and delete **Users**, each User belongs to exactly one Customer
 - Deleting a Customer automatically deletes all of its Users
 - Supports filtering, sorting, and pagination on list endpoints (`$select`, `$filter`,
   `$top`, `$skip`, `$orderby`)
-- Names and emails must be unique , trying to create a duplicate returns a clear error
+- Names and emails must be unique, trying to create a duplicate returns a clear error
 - Data is stored in a local SQLite database file
 
 ## What you need before running this
@@ -41,7 +41,7 @@ cd CustomerApi.Tests
 dotnet test
 ```
 
-This runs a set of automated checks that confirm the core features work correctly 
+This runs a set of automated checks that confirm the core features work correctly,
 creating records, blocking duplicates, returning proper errors, and cascade delete.
 
 ## A few decisions worth explaining
@@ -52,20 +52,15 @@ creating records, blocking duplicates, returning proper errors, and cascade dele
 - **Why does deleting a Customer also delete its Users?** This is enforced directly
   in the database itself, so it's guaranteed to happen consistently, not just
   something the application code has to remember to do.
-- **Why SQLite?** It's a lightweight database that lives in a single file ,no
+- **Why SQLite?** It's a lightweight database that lives in a single file, no
   separate database server needs to be installed or running.
-  
 
+## Time spent
 
-  ## Time spent
-
-Approximately 7 hours total:
- - 2 hours: environment setup (.NET SDK, VS Code, project scaffolding) and researching
+Approximately 6 hours total:
+- 2 hours: environment setup (.NET SDK, VS Code, project scaffolding) and researching
   concepts I hadn't used before (EF Core, OData, DTOs)
-
- - 2 hours: implementing the Customer and User models, DbContext, and both controllers
+- 2 hours: implementing the Customer and User models, DbContext, and both controllers
   with full CRUD support
-
- - 2 hours: writing and running automated tests
-
- - 1 hour: debugging, error handling, cleanup, and documentation
+- 1 hours: writing and running automated tests
+- 1 hour: debugging, error handling, cleanup, and documentation
