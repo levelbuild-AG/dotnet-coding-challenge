@@ -41,14 +41,14 @@ cd CustomerApi.Tests
 dotnet test
 ```
 
-This runs a set of automated checks that confirm the core features work correctly —
+This runs a set of automated checks that confirm the core features work correctly 
 creating records, blocking duplicates, returning proper errors, and cascade delete.
 
 ## A few decisions worth explaining
 
 - **Why separate DTOs from database models?** So a Customer's response never
   accidentally includes its list of Users, and a User's response only shows the
-  Customer's ID — not the Customer's full details — exactly as required.
+  Customer's ID and not the Customer's full details.
 - **Why does deleting a Customer also delete its Users?** This is enforced directly
   in the database itself, so it's guaranteed to happen consistently, not just
   something the application code has to remember to do.
